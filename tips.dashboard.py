@@ -5,30 +5,7 @@ import seaborn as sns
 import plotly.express as px
 
 # Set page config
-st.set_page_config(page_title="Enhanced Tips Dashboard", layout="wide")
-
-# Custom CSS for styling
-st.markdown("""
-    <style>
-    .sidebar .sidebar-content {
-        background-color: #f0f2f6;
-    }
-    .stButton>button {
-        color: white;
-        background-color: #4CAF50;
-    }
-    .stMetric {
-        background-color: #f0f2f6;
-        padding: 10px;
-        border-radius: 10px;
-    }
-    .stPlotlyChart {
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        padding: 10px;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+st.set_page_config(page_title=" Tips Dashboard", layout="wide")
 
 # Load data
 tips_df = pd.read_csv("tips.csv")
@@ -37,6 +14,41 @@ tips_df = pd.read_csv("tips.csv")
 st.sidebar.header("Tips Dashboard")
 st.sidebar.image("tips.jpg")
 st.sidebar.write("This dashboard uses the Tips dataset from Seaborn for educational purposes.")
+
+# Sidebar color picker
+primary_color = st.sidebar.color_picker("Pick a Primary Color", "#4CAF50")
+secondary_color = st.sidebar.color_picker("Pick a Secondary Color", "#f0f2f6")
+
+# Custom CSS for styling
+st.markdown(f"""
+    <style>
+    .sidebar .sidebar-content {{
+        background-color: {secondary_color};
+    }}
+    .stButton>button {{
+        color: white;
+        background-color: {primary_color};
+    }}
+    .stMetric {{
+        background-color: {secondary_color};
+        padding: 10px;
+        border-radius: 10px;
+    }}
+    .stPlotlyChart {{
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 10px;
+    }}
+    .stTitle {{
+        font-size: 2.5em;
+        font-weight: bold;
+        color: {primary_color};
+        padding: 10px;
+        border-bottom: 2px solid {primary_color};
+    }}
+    </style>
+    """, unsafe_allow_html=True)
+
 cat_filter = st.sidebar.selectbox("Categorical Filtering", [None, 'sex', 'smoker', 'day', 'time'])
 num_filter = st.sidebar.selectbox("Numerical Filtering", [None, 'total_bill', 'tip'])
 row_filter = st.sidebar.selectbox("Row Filtering", [None, 'sex', 'smoker', 'day', 'time'])
@@ -46,7 +58,7 @@ st.sidebar.write("")
 st.sidebar.markdown("made with :heart_eyes: by Eng. Alaa Elsaid")
 
 # Dashboard body
-st.title("Enhanced Tips Dashboard")
+st.markdown("<h1 class='stTitle'> Tips Dashboard</h1>", unsafe_allow_html=True)
 
 # Max & Min metrics
 a1, a2, a3, a4 = st.columns(4)
