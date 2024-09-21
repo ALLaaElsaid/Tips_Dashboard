@@ -5,10 +5,20 @@ import seaborn as sns
 import plotly.express as px
 
 # Set page config
-st.set_page_config(page_title=" Tips Dashboard", layout="wide")
+st.set_page_config(page_title="Tips Dashboard", layout="wide")
 
-# Load data
-tips_df = pd.read_csv("tips.csv")
+# Load data with error handling
+try:
+    tips_df = pd.read_csv("tips.csv")
+except FileNotFoundError:
+    st.error("File not found. Please upload the correct file.")
+    st.stop()
+except pd.errors.EmptyDataError:
+    st.error("File is empty. Please upload a valid CSV file.")
+    st.stop()
+except Exception as e:
+    st.error(f"An error occurred: {e}")
+    st.stop()
 
 # Sidebar
 st.sidebar.header("Tips Dashboard")
@@ -38,6 +48,10 @@ st.markdown(f"""
         border: 1px solid #ddd;
         border-radius: 10px;
         padding: 10px;
+        transition: transform 0.2s;
+    }}
+    .stPlotlyChart:hover {{
+        transform: scale(1.05);
     }}
     .stTitle {{
         font-size: 2.5em;
@@ -69,7 +83,10 @@ a4.metric("Min. Tip", tips_df['tip'].min())
 
 # Scatter plot
 st.subheader("Total Bills Vs. Tips")
-fig = px.scatter(tips_df, x='total_bill', y='tip', color=cat_filter, size=num_filter, facet_col=col_filter, facet_row=row_filter)
+if cat_filter:
+    fig = px.scatter(tips_df, x='total_bill', y='tip', color=cat_filter, size=num_filter, facet_col=col_filter, facet_row=row_filter)
+else:
+    fig = px.scatter(tips_df, x='total_bill', y='tip')
 st.plotly_chart(fig, use_container_width=True, className="stPlotlyChart")
 
 # Bar and Pie charts
@@ -103,3 +120,9 @@ st.plotly_chart(fig, use_container_width=True, className="stPlotlyChart")
 # Summary statistics
 st.subheader("Summary Statistics")
 st.write(tips_df.describe())
+
+# Feedback section
+st.sidebar.subheader("Feedback")
+feedback = st.sidebar.text_area("Your feedback", "")
+if st.sidebar.button("Submit"):
+    st.sidebar.write("Thank you for your feedback!")
